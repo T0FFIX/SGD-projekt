@@ -43,6 +43,7 @@ int main(int, char **)
     int acc_x = 0;
     int acc_y = 0;
     unsigned int speed = 15;
+    double angle = 0;
     bool arrow_in_air = false;
     bool arrow_crash = false;
 
@@ -169,10 +170,6 @@ int main(int, char **)
             {
                 game_active = false;
             }
-            // if (acc_y == 0 && acc_x == 0)
-            // {
-            //     arrow_in_air = false;
-            // }
 
             // keyboard events
             if (event.type == SDL_KEYDOWN && arrow_in_air == false)
@@ -273,10 +270,12 @@ int main(int, char **)
             arrow_position.x = arrow_position.x + acc_x;
             arrow_position.y = arrow_position.y + acc_y + gravity;
             gravity += 0.2;
+            angle = (acc_y + gravity)*2;
         }
         else if (arrow_crash == true)
         {
             gravity = 5;
+            angle = 0;
         }
         
         if (score_number > 1000)
@@ -289,7 +288,10 @@ int main(int, char **)
             cout << "You Lose!" << endl;
             score_number = 0;
         }
-
+        if (arrow_in_air == false)
+        {
+            angle = (acc_y)*2;
+        }
         SDL_RenderCopy(renderer, background_picture, NULL, NULL);
         SDL_RenderCopy(renderer, target_picture, NULL, &target_1_position);
         SDL_RenderCopy(renderer, target_picture, NULL, &target_2_position);
@@ -297,7 +299,8 @@ int main(int, char **)
         SDL_RenderCopy(renderer, target_picture, NULL, &target_4_position);
         SDL_RenderCopy(renderer, target_picture, NULL, &target_5_position);
         SDL_RenderCopy(renderer, archer_picture, NULL, &archer_position);
-        SDL_RenderCopy(renderer, arrow_picture, NULL, &arrow_position);
+        // SDL_RenderCopy(renderer, arrow_picture, NULL, &arrow_position);
+        SDL_RenderCopyEx(renderer,arrow_picture,NULL, &arrow_position, angle, NULL, SDL_FLIP_NONE);
         SDL_RenderCopy(renderer, score_picture, NULL, &score_position);
         SDL_RenderCopy(renderer, speed_x_picture, NULL, &speed_x_position);
         SDL_RenderCopy(renderer, speed_y_picture, NULL, &speed_y_position);
